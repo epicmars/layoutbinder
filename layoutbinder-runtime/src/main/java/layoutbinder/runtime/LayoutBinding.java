@@ -19,7 +19,7 @@ import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-public abstract class LayoutBinding<T, VDB> implements LayoutUnbinder{
+public abstract class LayoutBinding<T, VDB> implements LayoutUnbinder {
 
     protected T target;
     protected VDB binding;
@@ -63,7 +63,7 @@ public abstract class LayoutBinding<T, VDB> implements LayoutUnbinder{
         this.target = null;
         this.view = null;
         if (this.binding instanceof ViewDataBinding) {
-            ((ViewDataBinding)this.binding).unbind();
+            ((ViewDataBinding) this.binding).unbind();
             this.binding = null;
         }
     }

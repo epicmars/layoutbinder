@@ -20,9 +20,7 @@ import javax.lang.model.element.TypeElement;
 
 import layoutbinder.annotations.BindLayout;
 
-
 public interface LayoutBindingCoder {
 
-    void code(Filer filer,
-              BindingElements bindingElements);
+    void code(Filer filer, BindingElements bindingElements);
 }

@@ -28,7 +28,6 @@ import com.androidpi.layoutbinder.sample.databinding.FragmentDataBindingExampleB
 import layoutbinder.LayoutBinder;
 import layoutbinder.annotations.BindLayout;
 
-
 public class DataBindingExampleFragment extends Fragment {
 
     @BindLayout(R.layout.fragment_data_binding_example)
@@ -36,7 +35,10 @@ public class DataBindingExampleFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         return LayoutBinder.bind(this, inflater, container, false).getView();
     }
 }

@@ -25,9 +25,7 @@ import javax.annotation.processing.Filer;
 public class CodeUtils {
 
     public static void write(Filer filer, String packageName, TypeSpec typeSpec) {
-        JavaFile javaFile = JavaFile.builder(packageName, typeSpec)
-                .indent("    ")
-                .build();
+        JavaFile javaFile = JavaFile.builder(packageName, typeSpec).indent("    ").build();
         try {
             javaFile.writeTo(filer);
         } catch (IOException e) {

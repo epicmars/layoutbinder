@@ -28,5 +28,6 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface BindLayout {
 
-    @LayoutRes int value() default 0;
+    @LayoutRes
+    int value() default 0;
 }

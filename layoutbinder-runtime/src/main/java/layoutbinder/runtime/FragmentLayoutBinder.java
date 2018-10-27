@@ -22,4 +22,6 @@ import android.view.ViewGroup;
 public interface FragmentLayoutBinder<T> {
 
     View bind(T fragment, LayoutInflater inflater, ViewGroup parent, boolean attachToParent);
+
+    View bind(T fragment, LayoutInflater inflater, ViewGroup parent);
 }

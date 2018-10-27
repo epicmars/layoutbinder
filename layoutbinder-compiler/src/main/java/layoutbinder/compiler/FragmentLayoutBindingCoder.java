@@ -27,7 +27,6 @@ import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.processing.Filer;
@@ -66,8 +65,10 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
         MethodSpec constructor =
                 MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).build();
 
-        TypeName dataBindingType = bindingElements.getViewDataBinding() == null ?
-                TypeName.get(Object.class) : TypeName.get(bindingElements.getViewDataBinding().asType());
+        TypeName dataBindingType =
+                bindingElements.getViewDataBinding() == null
+                        ? TypeName.get(Object.class)
+                        : TypeName.get(bindingElements.getViewDataBinding().asType());
 
         TypeName abstractParameterized =
                 ParameterizedTypeName.get(
@@ -105,7 +106,8 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
 
     private List<MethodSpec> generateDefaultMethods(
             TypeName targetClassName, BindLayout bindLayout) {
-        MethodSpec bindMethod =
+
+        MethodSpec bindMethod1 =
                 MethodSpec.methodBuilder("bind")
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addAnnotation(Override.class)
@@ -124,7 +126,27 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                         .addStatement("return view")
                         .returns(View.class)
                         .build();
-        return Collections.singletonList(bindMethod);
+
+        MethodSpec bindMethod2 =
+                MethodSpec.methodBuilder("bind")
+                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                        .addAnnotation(Override.class)
+                        .addParameter(targetClassName, "target")
+                        .addParameter(LayoutInflater.class, "inflater")
+                        .addParameter(ViewGroup.class, "parent")
+                        .addStatement(
+                                "return this.bind($L, $L, $L, $L != null)",
+                                "target",
+                                "inflater",
+                                "parent",
+                                "parent")
+                        .returns(View.class)
+                        .build();
+
+        List<MethodSpec> methodSpecList = new ArrayList<>();
+        methodSpecList.add(bindMethod1);
+        methodSpecList.add(bindMethod2);
+        return methodSpecList;
     }
 
     private List<MethodSpec> generateDataBindingMethods(
@@ -138,7 +160,7 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                         viewDataBindingFieldName,
                         TypeName.get(bindingElements.getViewDataBinding().asType()));
 
-        MethodSpec bindMethod =
+        MethodSpec bindMethod1 =
                 MethodSpec.methodBuilder("bind")
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addAnnotation(Override.class)
@@ -160,8 +182,26 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                         .addStatement("return getView()")
                         .returns(View.class)
                         .build();
+
+        MethodSpec bindMethod2 =
+                MethodSpec.methodBuilder("bind")
+                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                        .addAnnotation(Override.class)
+                        .addParameter(targetClassName, "target")
+                        .addParameter(LayoutInflater.class, "inflater")
+                        .addParameter(ViewGroup.class, "parent")
+                        .addStatement(
+                                "return this.bind($L, $L, $L, $L != null)",
+                                "target",
+                                "inflater",
+                                "parent",
+                                "parent")
+                        .returns(View.class)
+                        .build();
+
         List<MethodSpec> methodSpecList = new ArrayList<>();
-        methodSpecList.add(bindMethod);
+        methodSpecList.add(bindMethod1);
+        methodSpecList.add(bindMethod2);
         return methodSpecList;
     }
 

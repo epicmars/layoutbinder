@@ -15,7 +15,6 @@
  */
 package layoutbinder.runtime;
 
-
 public interface ActivityLayoutBinder<T> {
 
     void bind(T activity);

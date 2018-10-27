@@ -38,4 +38,10 @@ public class LayoutBinder {
         ((FragmentLayoutBinder) binding).bind(fragment, inflater, parent, attachToParent);
         return binding;
     }
+
+    public static LayoutBinding bind(Fragment fragment, LayoutInflater inflater, ViewGroup parent) {
+        LayoutBinding binding = LayoutBindingFactoryMapper.get(fragment).create();
+        ((FragmentLayoutBinder) binding).bind(fragment, inflater, parent);
+        return binding;
+    }
 }
