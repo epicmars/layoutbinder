@@ -42,13 +42,14 @@ public class Coders {
         this.types = types;
     }
 
-    private static Map<String, LayoutBindingCoder> CODERS = new LinkedHashMap<String, LayoutBindingCoder>() {
-        {
-            put(Constants.ACTIVITY_TYPE_NAME, ActivityLayoutBindingCoder.INSTANCE);
-            put(Constants.FRAGMENT_TYPE_NAME, FragmentLayoutBindingCoder.INSTANCE);
-            put(Constants.SUPPORT_FRAGMENT_TYPE_NAME, FragmentLayoutBindingCoder.INSTANCE);
-        }
-    };
+    private static Map<String, LayoutBindingCoder> CODERS =
+            new LinkedHashMap<String, LayoutBindingCoder>() {
+                {
+                    put(Constants.ACTIVITY_TYPE_NAME, ActivityLayoutBindingCoder.INSTANCE);
+                    put(Constants.FRAGMENT_TYPE_NAME, FragmentLayoutBindingCoder.INSTANCE);
+                    put(Constants.SUPPORT_FRAGMENT_TYPE_NAME, FragmentLayoutBindingCoder.INSTANCE);
+                }
+            };
 
     public boolean isSubType(TypeElement typeElement, String className) {
         TypeMirror typeMirror = typeElement.asType();
@@ -59,8 +60,8 @@ public class Coders {
     public LayoutBindingCoder find(TypeElement typeElement) {
         if (isSubType(typeElement, Constants.ACTIVITY_TYPE_NAME)) {
             return ActivityLayoutBindingCoder.INSTANCE;
-        } else if (isSubType(typeElement, Constants.FRAGMENT_TYPE_NAME) ||
-                isSubType(typeElement, Constants.SUPPORT_FRAGMENT_TYPE_NAME)) {
+        } else if (isSubType(typeElement, Constants.FRAGMENT_TYPE_NAME)
+                || isSubType(typeElement, Constants.SUPPORT_FRAGMENT_TYPE_NAME)) {
             return FragmentLayoutBindingCoder.INSTANCE;
         }
         return null;
@@ -70,18 +71,19 @@ public class Coders {
 
         CodeBlock.Builder initializeBlock = CodeBlock.builder();
         for (BindingElements bindingElements : bindingElementsSet) {
-            initializeBlock.addStatement("LayoutBindingFactoryMapper.put($T.class, new $L())",
+            initializeBlock.addStatement(
+                    "LayoutBindingFactoryMapper.put($T.class, new $L())",
                     bindingElements.getTarget(),
                     bindingElements.getTarget().getQualifiedName()
                             + Constants.CLASS_NAME_SUFFIX
                             + "$Factory");
         }
 
-        TypeSpec typeSpec = TypeSpec.classBuilder(ClassName.get(
-                "layoutbinder", "LayoutBindingFactories"))
-                .addModifiers(Modifier.PUBLIC)
-                .addStaticBlock(initializeBlock.build())
-                .build();
+        TypeSpec typeSpec =
+                TypeSpec.classBuilder(ClassName.get("layoutbinder", "LayoutBindingFactories"))
+                        .addModifiers(Modifier.PUBLIC)
+                        .addStaticBlock(initializeBlock.build())
+                        .build();
 
         CodeUtils.write(filer, "layoutbinder", typeSpec);
     }
@@ -94,6 +96,7 @@ public class Coders {
     }
 
     public void code(Filer filer, Set<BindingElements> bindingElementsSet) {
+        if (bindingElementsSet == null || bindingElementsSet.isEmpty()) return;
         for (BindingElements bindingElements : bindingElementsSet) {
             generateLayoutBinding(bindingElements);
         }

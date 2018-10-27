@@ -16,6 +16,7 @@
 package layoutbinder.compiler;
 
 import com.google.auto.service.AutoService;
+import com.sun.source.util.Trees;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -44,6 +45,7 @@ public class LayoutBinderProcessor extends AbstractProcessor {
     private Types types;
     private Elements elements;
     private Messager messager;
+    private Trees trees;
 
     private Coders coders;
 
@@ -55,13 +57,15 @@ public class LayoutBinderProcessor extends AbstractProcessor {
         types = processingEnvironment.getTypeUtils();
         messager = processingEnvironment.getMessager();
         elements = processingEnvironment.getElementUtils();
+        trees = Trees.instance(processingEnvironment);
 
         coders = new Coders(filer, elements, types);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
-        Set<? extends Element> elementSet = roundEnvironment.getElementsAnnotatedWith(BindLayout.class);
+        Set<? extends Element> elementSet =
+                roundEnvironment.getElementsAnnotatedWith(BindLayout.class);
         Set<BindingElements> bindingElementsSet = new HashSet<>();
         for (Element element : elementSet) {
             if (element instanceof TypeElement) {
@@ -84,9 +88,7 @@ public class LayoutBinderProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return new LinkedHashSet<>(
-                Arrays.asList(BindLayout.class.getCanonicalName())
-        );
+        return new LinkedHashSet<>(Arrays.asList(BindLayout.class.getCanonicalName()));
     }
 
     @Override

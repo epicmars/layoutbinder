@@ -23,9 +23,12 @@ import android.os.Bundle;
 import layoutbinder.LayoutBinder;
 
 import layoutbinder.annotations.BindLayout;
+import layoutbinder.runtime.LayoutBinding;
 
 @BindLayout(R.layout.activity_example)
 public class ExampleActivity extends AppCompatActivity {
+
+    LayoutBinding layoutBinding;
 
     public static void start(Context context) {
         Intent starter = new Intent(context, ExampleActivity.class);
@@ -35,6 +38,12 @@ public class ExampleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        LayoutBinder.bind(this);
+        layoutBinding = LayoutBinder.bind(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        layoutBinding.unbind();
     }
 }

@@ -15,10 +15,11 @@
  */
 package layoutbinder.runtime;
 
+import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 
-public abstract class LayoutBinding<T, VDB> {
+public abstract class LayoutBinding<T, VDB> implements LayoutUnbinder{
 
     protected T target;
     protected VDB binding;
@@ -55,5 +56,15 @@ public abstract class LayoutBinding<T, VDB> {
 
     public VDB getBinding() {
         return binding;
+    }
+
+    @Override
+    public void unbind() {
+        this.target = null;
+        this.view = null;
+        if (this.binding instanceof ViewDataBinding) {
+            ((ViewDataBinding)this.binding).unbind();
+            this.binding = null;
+        }
     }
 }

@@ -11,7 +11,8 @@ dependencies {
 
     implementation 'com.squareup:javapoet:1.11.1'
     implementation 'com.google.auto:auto-common:0.10'
-    compileOnly 'com.google.auto.service:auto-service:1.0-rc4'
     implementation 'com.google.android:android:4.1.1.4'
     implementation 'com.google.android:support-v4:r7'
+    compileOnly 'com.google.auto.service:auto-service:1.0-rc4'
+    compileOnly files(org.gradle.internal.jvm.Jvm.current().toolsJar)
 }

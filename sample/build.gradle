@@ -4,8 +4,6 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
-apply plugin: 'kotlin-kapt'
-
 android {
     compileSdkVersion 28
     defaultConfig {
@@ -39,5 +37,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     implementation project(':layoutbinder')
-    kapt project(':layoutbinder-compiler')
+    annotationProcessor project(':layoutbinder-compiler')
 }
