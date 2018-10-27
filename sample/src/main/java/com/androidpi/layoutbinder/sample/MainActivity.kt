@@ -15,8 +15,8 @@
  */
 package com.androidpi.layoutbinder.sample
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import layoutbinder.LayoutBinder
 import layoutbinder.annotations.BindLayout
@@ -28,8 +28,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         LayoutBinder.bind(this)
 
-        tv_content.setOnClickListener {
+        btn_example_activity.setOnClickListener {
             ExampleActivity.start(this)
+        }
+
+        btn_data_binding_example.setOnClickListener {
+            DataBindingExampleActivity.start(this)
         }
     }
 }
