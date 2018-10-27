@@ -24,6 +24,5 @@ import layoutbinder.annotations.BindLayout;
 public interface LayoutBindingCoder {
 
     void code(Filer filer,
-              TypeElement typeElement,
-              BindLayout bindLayout);
+              BindingElements bindingElements);
 }

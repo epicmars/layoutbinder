@@ -16,14 +16,15 @@
 package layoutbinder.compiler;
 
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
@@ -34,70 +35,130 @@ import layoutbinder.annotations.BindLayout;
 import static com.google.auto.common.MoreElements.getPackage;
 
 public enum ActivityLayoutBindingCoder implements LayoutBindingCoder {
-
     INSTANCE;
 
     @Override
-    public void code(Filer filer, TypeElement targetElement, BindLayout bindLayout) {
+    public void code(Filer filer, BindingElements bindingElements) {
+        final TypeElement targetElement = bindingElements.getTarget();
         final String packageName = getPackage(targetElement).getQualifiedName().toString();
-        final String generatedClassName = ClassName.get(targetElement).simpleName() + Constants.CLASS_NAME_SUFFIX;
+        final String generatedClassName =
+                ClassName.get(targetElement).simpleName() + Constants.CLASS_NAME_SUFFIX;
 
-        generateLayoutBinding(filer, bindLayout, packageName, targetElement, generatedClassName);
+        generateLayoutBinding(filer, packageName, bindingElements, generatedClassName);
         generateFactory(filer, packageName, generatedClassName);
     }
 
-    private void generateLayoutBinding(Filer filer, BindLayout bindLayout, String packageName,
-                                       TypeElement targetElement, String generatedClassName) {
-        final ClassName targetClassName = ClassName.get(targetElement);
+    private void generateLayoutBinding(
+            Filer filer,
+            String packageName,
+            BindingElements bindingElements,
+            String generatedClassName) {
+        final ClassName targetClassName = ClassName.get(bindingElements.getTarget());
+        BindLayout bindLayout = bindingElements.getTarget().getAnnotation(BindLayout.class);
+        if (bindLayout == null) {
+            bindLayout = bindingElements.getViewDataBinding().getAnnotation(BindLayout.class);
+        }
 
-        MethodSpec constructor = MethodSpec.constructorBuilder()
-                .addModifiers(Modifier.PUBLIC)
-                .build();
+        MethodSpec constructor =
+                MethodSpec.constructorBuilder().addModifiers(Modifier.PUBLIC).build();
 
-        MethodSpec bindMethod = MethodSpec.methodBuilder("bind")
-                .addAnnotation(Override.class)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addParameter(targetClassName, "target")
-                .addStatement("setTarget($L)", "target")
-                .addStatement("setLayoutRes($L)", bindLayout.value())
-                .addStatement("target.setContentView($L)", bindLayout.value())
-                .returns(void.class)
-                .build();
+        List<MethodSpec> methodSpecList =
+                generateLayoutBindingMethods(targetClassName, bindLayout, bindingElements);
 
-        TypeName abstractParameterized = ParameterizedTypeName.get(
-                ClassName.get("layoutbinder.runtime", "LayoutBinding"),
-                targetClassName, TypeName.get(Object.class));
+        TypeName dataBindingType =
+                bindingElements.getViewDataBinding() == null
+                        ? TypeName.get(Object.class)
+                        : TypeName.get(bindingElements.getViewDataBinding().asType());
 
-        TypeName interfaceParameterized = ParameterizedTypeName.get(
-                ClassName.get("layoutbinder.runtime", "ActivityLayoutBinder"),
-                targetClassName);
+        TypeName abstractParameterized =
+                ParameterizedTypeName.get(
+                        ClassName.get("layoutbinder.runtime", "LayoutBinding"),
+                        targetClassName,
+                        dataBindingType);
 
-        TypeSpec typeSpec = TypeSpec.classBuilder(generatedClassName)
-                .superclass(abstractParameterized)
-                .addSuperinterface(interfaceParameterized)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addMethod(constructor)
-                .addMethod(bindMethod)
-                .build();
+        TypeName interfaceParameterized =
+                ParameterizedTypeName.get(
+                        ClassName.get("layoutbinder.runtime", "ActivityLayoutBinder"),
+                        targetClassName);
+
+        TypeSpec typeSpec =
+                TypeSpec.classBuilder(generatedClassName)
+                        .superclass(abstractParameterized)
+                        .addSuperinterface(interfaceParameterized)
+                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                        .addMethod(constructor)
+                        .addMethods(methodSpecList)
+                        .build();
         CodeUtils.write(filer, packageName, typeSpec);
+    }
+
+    private List<MethodSpec> generateLayoutBindingMethods(
+            TypeName targetClassName, BindLayout bindLayout, BindingElements bindingElements) {
+        if (bindingElements.getViewDataBinding() == null) {
+            return generateDefaultMethods(targetClassName, bindLayout);
+        }
+        return generateDataBindingMethods(targetClassName, bindLayout, bindingElements);
+    }
+
+    private List<MethodSpec> generateDefaultMethods(
+            TypeName targetClassName, BindLayout bindLayout) {
+        MethodSpec bindMethod =
+                MethodSpec.methodBuilder("bind")
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                        .addParameter(targetClassName, "target")
+                        .addStatement("setTarget($L)", "target")
+                        .addStatement("setLayoutRes($L)", bindLayout.value())
+                        .addStatement("target.setContentView($L)", bindLayout.value())
+                        .returns(void.class)
+                        .build();
+        return Collections.singletonList(bindMethod);
+    }
+
+    private List<MethodSpec> generateDataBindingMethods(
+            TypeName targetClassName, BindLayout bindLayout, BindingElements bindingElements) {
+        String viewDataBindingFieldName =
+                bindingElements.getViewDataBinding().getSimpleName().toString();
+        TypeVariableName bindingField =
+                TypeVariableName.get(
+                        viewDataBindingFieldName,
+                        TypeName.get(bindingElements.getViewDataBinding().asType()));
+        MethodSpec bindMethod1 =
+                MethodSpec.methodBuilder("bind")
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                        .addParameter(targetClassName, "target")
+                        .addStatement("setTarget($L)", "target")
+                        .addStatement("setLayoutRes($L)", bindLayout.value())
+                        .addStatement(
+                                "target.$T = $T.setContentView(target, $L)",
+                                bindingField,
+                                ClassName.get("android.databinding", "DataBindingUtil"),
+                                bindLayout.value())
+                        .returns(void.class)
+                        .build();
+        List<MethodSpec> methodSpecList = new ArrayList<>();
+        methodSpecList.add(bindMethod1);
+        return methodSpecList;
     }
 
     private void generateFactory(Filer filer, String packageName, String generatedClassName) {
         // Generate layout binding factory
-        MethodSpec createMethod = MethodSpec.methodBuilder("create")
-                .addAnnotation(Override.class)
-                .addModifiers(Modifier.PUBLIC)
-                .addStatement("return new $L()", generatedClassName)
-                .returns(TypeVariableName.get(generatedClassName))
-                .build();
+        MethodSpec createMethod =
+                MethodSpec.methodBuilder("create")
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC)
+                        .addStatement("return new $L()", generatedClassName)
+                        .returns(TypeVariableName.get(generatedClassName))
+                        .build();
 
-        TypeSpec typeSpec = TypeSpec.classBuilder(generatedClassName + "$Factory")
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addSuperinterface(ClassName.get("layoutbinder.runtime", "LayoutBindingFactory"))
-                .addMethod(createMethod)
-                .build();
+        TypeSpec typeSpec =
+                TypeSpec.classBuilder(generatedClassName + "$Factory")
+                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                        .addSuperinterface(
+                                ClassName.get("layoutbinder.runtime", "LayoutBindingFactory"))
+                        .addMethod(createMethod)
+                        .build();
         CodeUtils.write(filer, packageName, typeSpec);
     }
-
-
 }

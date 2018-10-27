@@ -28,7 +28,6 @@ public class CodeUtils {
         JavaFile javaFile = JavaFile.builder(packageName, typeSpec)
                 .indent("    ")
                 .build();
-
         try {
             javaFile.writeTo(filer);
         } catch (IOException e) {

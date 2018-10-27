@@ -26,16 +26,14 @@ import layoutbinder.runtime.LayoutBinding;
 
 public class LayoutBinder {
 
-
-
     public static LayoutBinding bind(Activity activity) {
         LayoutBinding binding = LayoutBindingFactoryMapper.get(activity).create();
         ((ActivityLayoutBinder) binding).bind(activity);
         return binding;
     }
 
-    public static LayoutBinding bind(Fragment fragment, LayoutInflater inflater,
-                                     ViewGroup parent, boolean attachToParent) {
+    public static LayoutBinding bind(
+            Fragment fragment, LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
         LayoutBinding binding = LayoutBindingFactoryMapper.get(fragment).create();
         ((FragmentLayoutBinder) binding).bind(fragment, inflater, parent, attachToParent);
         return binding;

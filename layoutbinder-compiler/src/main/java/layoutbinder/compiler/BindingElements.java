@@ -15,12 +15,27 @@
  */
 package layoutbinder.compiler;
 
-import javax.annotation.processing.Filer;
+import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 
-public class LayoutBinderCoder {
+public class BindingElements {
 
-    public static void code(Filer filer) {
+    TypeElement target;
+    VariableElement viewDataBinding;
 
+    public TypeElement getTarget() {
+        return target;
+    }
 
+    public void setTarget(TypeElement target) {
+        this.target = target;
+    }
+
+    public VariableElement getViewDataBinding() {
+        return viewDataBinding;
+    }
+
+    public void setViewDataBinding(VariableElement viewDataBinding) {
+        this.viewDataBinding = viewDataBinding;
     }
 }

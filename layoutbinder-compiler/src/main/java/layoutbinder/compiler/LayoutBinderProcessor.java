@@ -32,6 +32,7 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 
 import layoutbinder.annotations.BindLayout;
@@ -41,7 +42,10 @@ public class LayoutBinderProcessor extends AbstractProcessor {
 
     private Filer filer;
     private Types types;
+    private Elements elements;
     private Messager messager;
+
+    private Coders coders;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
@@ -50,28 +54,31 @@ public class LayoutBinderProcessor extends AbstractProcessor {
         filer = processingEnvironment.getFiler();
         types = processingEnvironment.getTypeUtils();
         messager = processingEnvironment.getMessager();
+        elements = processingEnvironment.getElementUtils();
+
+        coders = new Coders(filer, elements, types);
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         Set<? extends Element> elementSet = roundEnvironment.getElementsAnnotatedWith(BindLayout.class);
-        Set<TypeElement> typeElements = new HashSet<>();
+        Set<BindingElements> bindingElementsSet = new HashSet<>();
         for (Element element : elementSet) {
             if (element instanceof TypeElement) {
                 TypeElement typeElement = ((TypeElement) element);
-                typeElements.add(typeElement);
-                BindLayout bindLayout = typeElement.getAnnotation(BindLayout.class);
-                LayoutBindingCoder coder = Coders.find(typeElement);
-                if (coder != null) {
-                    coder.code(filer, typeElement, bindLayout);
-                }
+                BindingElements bindingElements = new BindingElements();
+                bindingElements.setTarget(typeElement);
+                bindingElementsSet.add(bindingElements);
             } else if (element instanceof VariableElement) {
                 VariableElement variableElement = ((VariableElement) element);
+                BindingElements bindingElements = new BindingElements();
+                // If the enclosing element is wrong, an exception will occur.
+                bindingElements.setTarget(((TypeElement) variableElement.getEnclosingElement()));
+                bindingElements.setViewDataBinding(variableElement);
+                bindingElementsSet.add(bindingElements);
             }
         }
-
-        LayoutBindingFactoriesCoder.code(filer, typeElements);
-        LayoutBinderCoder.code(filer);
+        coders.code(filer, bindingElementsSet);
         return false;
     }
 
