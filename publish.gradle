@@ -110,9 +110,9 @@ if (isAndroidProject()) {
 
 def pomConfig = {
     scm {
-        connection 'scm:git:git@github.com:jastrelax/layoutbinder.git'
-        developerConnection 'scm:git:git@github.com:jastrelax/layoutbinder.git'
-        url 'https://github.com/jastrelax/layoutbinder'
+        connection POM_SCM_CONNECTION
+        developerConnection POM_SCM_DEVELOPERCONNECTION
+        url POM_SCM_URL
     }
 
     licenses {
@@ -185,8 +185,8 @@ bintray {
         desc = project.ext.projectDescription
         publicDownloadNumbers = false
         licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/jastrelax/layoutbinder.git'
-        websiteUrl = 'https://github.com/jastrelax/layoutbinder'
+        vcsUrl = VCS_URL
+        websiteUrl = VCS_SITE_URL
 
         githubRepo = 'jastrelax/layoutbinder'
 
