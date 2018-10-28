@@ -11,7 +11,7 @@
             android:id="@+id/tv_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/kotlin_data_binding_activity"
+            android:text="@string/title_data_binding_example_in_kotlin"
             android:gravity="center"/>
 
     </android.support.constraint.ConstraintLayout>

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="@string/example_activity"
+        android:text="@string/title_default_example"
         android:textAllCaps="false"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/data_binding_example_activity"
+        android:text="@string/title_data_binding_example"
         android:textAllCaps="false"
         app:layout_constraintTop_toBottomOf="@+id/btn_example_activity" />
 
@@ -31,7 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/kotlin_data_binding_activity"
+        android:text="@string/title_data_binding_example_in_kotlin"
         android:textAllCaps="false"
         app:layout_constraintTop_toBottomOf="@+id/btn_data_binding_example" />
 

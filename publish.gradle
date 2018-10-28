@@ -16,9 +16,6 @@
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
-version = '1.0.0-alpha'
-group = 'com.androidpi'
-
 def localProperties = new Properties()
 rootProject.file("local.properties").withInputStream {
     stream ->
@@ -177,11 +174,11 @@ bintray {
     configurations = ['archives']
     override = true
     publish = true
-    dryRun = false
+    dryRun = true
 
     pkg {
         repo = 'maven'
-        name = "${this.group}:${this.archivesBaseName}"
+        name = "${GROUP}:${project.name}"
         desc = project.ext.projectDescription
         publicDownloadNumbers = false
         licenses = ['Apache-2.0']
@@ -191,10 +188,10 @@ bintray {
         githubRepo = 'jastrelax/layoutbinder'
 
         version {
-            name = this.version
-            desc = "${project.ext.projectName} ${this.version}"
+            name = VERSION
+            desc = "${project.ext.projectName} ${VERSION}"
             released = new Date()
-            vcsTag = this.version
+            vcsTag = VERSION
 
             gpg {
                 sign = true

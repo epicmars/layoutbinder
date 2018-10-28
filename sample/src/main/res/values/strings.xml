@@ -4,10 +4,6 @@
     <string name="title_data_binding_example">Data Binding Example</string>
     <string name="title_data_binding_example_in_kotlin">Data Binding Example In Kotlin</string>
 
-    <string name="example_activity">Default Example Activity</string>
-    <string name="data_binding_example_activity">Data Binding Example Activity</string>
-    <string name="kotlin_data_binding_activity">Kotlin DataBinding Example Activity</string>
-
     <string name="example_fragment">Default Example Fragment</string>
     <string name="data_binding_example_fragment">Data Binding Example Fragment</string>
 </resources>
