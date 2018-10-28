@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -115,14 +116,14 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                         .addParameter(LayoutInflater.class, "inflater")
                         .addParameter(ViewGroup.class, "parent")
                         .addParameter(boolean.class, "attachToParent")
-                        .addStatement("setTarget($L)", "target")
-                        .addStatement("setLayoutRes($L)", bindLayout.value())
+                        .addStatement("this.target = $L", "target")
+                        .addStatement("this.layoutRes = $L", bindLayout.value())
                         .addStatement(
                                 "final View view = inflater.inflate($L, $L, $L)",
                                 bindLayout.value(),
                                 "parent",
                                 "attachToParent")
-                        .addStatement("setView($L)", "view")
+                        .addStatement("this.view = $L", "view")
                         .addStatement("return view")
                         .returns(View.class)
                         .build();
@@ -160,6 +161,33 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                         viewDataBindingFieldName,
                         TypeName.get(bindingElements.getViewDataBinding().asType()));
 
+        CodeBlock bindingAssignment =
+                CodeBlock.builder()
+                        .addStatement(
+                                "this.binding = $T.inflate(inflater, $L, $L, $L)",
+                                ClassName.get("android.databinding", "DataBindingUtil"),
+                                bindLayout.value(),
+                                "parent",
+                                "attachToParent")
+                        .addStatement("target.$T = this.binding", bindingField)
+                        .build();
+
+        if (bindingElements.getViewDataBinding().getModifiers().contains(Modifier.PRIVATE)) {
+            String bindingFieldCap =
+                    bindingField.name.substring(0, 1).toUpperCase()
+                            + bindingField.name.substring(1);
+            bindingAssignment =
+                    CodeBlock.builder()
+                            .addStatement(
+                                    "this.binding = $T.inflate(inflater, $L, $L, $L)",
+                                    ClassName.get("android.databinding", "DataBindingUtil"),
+                                    bindLayout.value(),
+                                    "parent",
+                                    "attachToParent")
+                            .addStatement("target.set$L(this.binding)", bindingFieldCap)
+                            .build();
+        }
+
         MethodSpec bindMethod1 =
                 MethodSpec.methodBuilder("bind")
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -168,18 +196,11 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                         .addParameter(LayoutInflater.class, "inflater")
                         .addParameter(ViewGroup.class, "parent")
                         .addParameter(boolean.class, "attachToParent")
-                        .addStatement("setTarget($L)", "target")
-                        .addStatement("setLayoutRes($L)", bindLayout.value())
-                        .addStatement(
-                                "target.$T = $T.inflate(inflater, $L, $L, $L)",
-                                bindingField,
-                                ClassName.get("android.databinding", "DataBindingUtil"),
-                                bindLayout.value(),
-                                "parent",
-                                "attachToParent")
-                        .addStatement("setBinding(target.$T)", bindingField)
-                        .addStatement("setView($T.getRoot())", bindingField)
-                        .addStatement("return getView()")
+                        .addStatement("this.target = ($L)", "target")
+                        .addStatement("this.layoutRes = ($L)", bindLayout.value())
+                        .addCode(bindingAssignment)
+                        .addStatement("this.view = this.binding.getRoot()")
+                        .addStatement("return this.view")
                         .returns(View.class)
                         .build();
 

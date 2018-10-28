@@ -16,6 +16,7 @@
 package layoutbinder.compiler;
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
@@ -107,8 +108,8 @@ public enum ActivityLayoutBindingCoder implements LayoutBindingCoder {
                         .addAnnotation(Override.class)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(targetClassName, "target")
-                        .addStatement("setTarget($L)", "target")
-                        .addStatement("setLayoutRes($L)", bindLayout.value())
+                        .addStatement("this.target = $L", "target")
+                        .addStatement("this.layoutRes = $L", bindLayout.value())
                         .addStatement("target.setContentView($L)", bindLayout.value())
                         .returns(void.class)
                         .build();
@@ -123,18 +124,37 @@ public enum ActivityLayoutBindingCoder implements LayoutBindingCoder {
                 TypeVariableName.get(
                         viewDataBindingFieldName,
                         TypeName.get(bindingElements.getViewDataBinding().asType()));
+        CodeBlock bindingAssignment =
+                CodeBlock.builder()
+                        .addStatement(
+                                "this.binding = $T.setContentView(target, $L)",
+                                ClassName.get("android.databinding", "DataBindingUtil"),
+                                bindLayout.value())
+                        .addStatement("target.$T = this.binding", bindingField)
+                        .build();
+        if (bindingElements.getViewDataBinding().getModifiers().contains(Modifier.PRIVATE)) {
+            String bindingFieldCap =
+                    bindingField.name.substring(0, 1).toUpperCase()
+                            + bindingField.name.substring(1);
+            bindingAssignment =
+                    CodeBlock.builder()
+                            .addStatement(
+                                    "this.binding = $T.setContentView(target, $L)",
+                                    ClassName.get("android.databinding", "DataBindingUtil"),
+                                    bindLayout.value())
+                            .addStatement("target.set$L(this.binding)", bindingFieldCap)
+                            .build();
+        }
+
         MethodSpec bindMethod1 =
                 MethodSpec.methodBuilder("bind")
                         .addAnnotation(Override.class)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(targetClassName, "target")
-                        .addStatement("setTarget($L)", "target")
-                        .addStatement("setLayoutRes($L)", bindLayout.value())
-                        .addStatement(
-                                "target.$T = $T.setContentView(target, $L)",
-                                bindingField,
-                                ClassName.get("android.databinding", "DataBindingUtil"),
-                                bindLayout.value())
+                        .addStatement("this.target = $L", "target")
+                        .addStatement("this.layoutRes = $L", bindLayout.value())
+                        .addCode(bindingAssignment)
+                        .addStatement("this.view = this.binding.getRoot()")
                         .returns(void.class)
                         .build();
         List<MethodSpec> methodSpecList = new ArrayList<>();
