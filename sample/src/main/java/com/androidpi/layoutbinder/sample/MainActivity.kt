@@ -35,5 +35,9 @@ class MainActivity : AppCompatActivity() {
         btn_data_binding_example.setOnClickListener {
             DataBindingExampleActivity.start(this)
         }
+
+        btn_data_binding_example_kotlin.setOnClickListener {
+            KotlinDataBindingActivity.start(this)
+        }
     }
 }

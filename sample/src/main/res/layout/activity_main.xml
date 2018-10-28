@@ -26,4 +26,13 @@
         android:textAllCaps="false"
         app:layout_constraintTop_toBottomOf="@+id/btn_example_activity" />
 
+    <Button
+        android:id="@+id/btn_data_binding_example_kotlin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/kotlin_data_binding_activity"
+        android:textAllCaps="false"
+        app:layout_constraintTop_toBottomOf="@+id/btn_data_binding_example" />
+
 </android.support.constraint.ConstraintLayout>
