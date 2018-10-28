@@ -33,5 +33,14 @@ dependencies {
     api project(':layoutbinder-annotations')
 }
 
+ext {
+    projectName = 'LayoutBinder'
+    projectDescription = "Bind layout to Activity and Fragment."
+    projectUrl = 'https://github.com/jastrelax/layoutbinder'
+
+    pomPackaging = 'aar'
+}
+
+apply from: rootProject.file('publish.gradle')
 
 

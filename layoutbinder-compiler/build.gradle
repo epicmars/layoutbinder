@@ -16,3 +16,13 @@ dependencies {
     compileOnly 'com.google.auto.service:auto-service:1.0-rc4'
     compileOnly files(org.gradle.internal.jvm.Jvm.current().toolsJar)
 }
+
+ext {
+    projectName = 'LayoutBinder Compiler'
+    projectDescription = "Annotation processor for LayoutBinder."
+    projectUrl = 'https://github.com/jastrelax/layoutbinder'
+
+    pomPackaging = 'jar'
+}
+
+apply from: rootProject.file('publish.gradle')

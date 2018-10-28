@@ -56,3 +56,13 @@ String getDataBindingLibVersion() {
     })
     return version
 }
+
+ext {
+    projectName = 'LayoutBinder Runtime'
+    projectDescription = "LayoutBinder Runtime."
+    projectUrl = 'https://github.com/jastrelax/layoutbinder'
+
+    pomPackaging = 'aar'
+}
+
+apply from: rootProject.file('publish.gradle')

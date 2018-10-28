@@ -9,3 +9,13 @@ dependencies {
 
     implementation 'com.android.support:support-annotations:28.0.0'
 }
+
+ext {
+    projectName = 'LayoutBinder Annotations'
+    projectDescription = "Annotations of LayoutBinder."
+    projectUrl = 'https://github.com/jastrelax/layoutbinder'
+
+    pomPackaging = 'jar'
+}
+
+apply from: rootProject.file('publish.gradle')
