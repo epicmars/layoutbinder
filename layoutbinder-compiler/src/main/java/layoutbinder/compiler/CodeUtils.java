@@ -19,8 +19,13 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.processing.Filer;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.Modifier;
+import javax.lang.model.element.TypeElement;
 
 public class CodeUtils {
 
@@ -31,5 +36,18 @@ public class CodeUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static boolean hasAccessibleMethod(TypeElement typeElement, String methodName) {
+        List<? extends Element> elements = typeElement.getEnclosedElements();
+        for (Element e : elements) {
+            if (e.getKind() == ElementKind.METHOD
+                    && e.getSimpleName().contentEquals(methodName)
+                    && (e.getModifiers().contains(Modifier.DEFAULT)
+                            || e.getModifiers().contains(Modifier.PUBLIC))) {
+                return true;
+            }
+        }
+        return false;
     }
 }

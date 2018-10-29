@@ -162,30 +162,40 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                         viewDataBindingFieldName,
                         TypeName.get(bindingElements.getViewDataBinding().asType()));
 
-        CodeBlock.Builder bindingAssignmentBuilder =
-                CodeBlock.builder();
+        CodeBlock.Builder bindingAssignmentBuilder = CodeBlock.builder();
 
         Set<Modifier> modifiers = bindingElements.getViewDataBinding().getModifiers();
         if (modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED)) {
-            String bindingFieldCap =
-                    bindingField.name.substring(0, 1).toUpperCase()
+            String bindingFieldSetter =
+                    "set"
+                            + bindingField.name.substring(0, 1).toUpperCase()
                             + bindingField.name.substring(1);
-            bindingAssignmentBuilder
-                            .addStatement(
-                                    "this.binding = $T.inflate(inflater, $L, $L, $L)",
-                                    ClassName.get("android.databinding", "DataBindingUtil"),
-                                    bindLayout.value(),
-                                    "parent",
-                                    "attachToParent")
-                            .addStatement("target.set$L(this.binding)", bindingFieldCap)
-                            .build();
+            if (CodeUtils.hasAccessibleMethod(bindingElements.getTarget(), bindingFieldSetter)) {
+                bindingAssignmentBuilder
+                        .addStatement(
+                                "this.binding = $T.inflate(inflater, $L, $L, $L)",
+                                ClassName.get("android.databinding", "DataBindingUtil"),
+                                bindLayout.value(),
+                                "parent",
+                                "attachToParent")
+                        .addStatement("target.$L(this.binding)", bindingFieldSetter)
+                        .build();
+            } else {
+                throw new RuntimeException(
+                        String.format(
+                                "%s's field \"%s\" should has a public or package-private modifier,"
+                                        + "otherwise a corresponding setter method should be presented "
+                                        + "with a public or package-private modifier.",
+                                targetClassName.toString(), bindingField.name));
+            }
         } else {
-            bindingAssignmentBuilder.addStatement(
-                    "this.binding = $T.inflate(inflater, $L, $L, $L)",
-                    ClassName.get("android.databinding", "DataBindingUtil"),
-                    bindLayout.value(),
-                    "parent",
-                    "attachToParent")
+            bindingAssignmentBuilder
+                    .addStatement(
+                            "this.binding = $T.inflate(inflater, $L, $L, $L)",
+                            ClassName.get("android.databinding", "DataBindingUtil"),
+                            bindLayout.value(),
+                            "parent",
+                            "attachToParent")
                     .addStatement("target.$T = this.binding", bindingField)
                     .build();
         }
