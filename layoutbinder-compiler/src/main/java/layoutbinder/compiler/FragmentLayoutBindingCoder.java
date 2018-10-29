@@ -29,6 +29,7 @@ import com.squareup.javapoet.TypeVariableName;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
@@ -161,23 +162,15 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                         viewDataBindingFieldName,
                         TypeName.get(bindingElements.getViewDataBinding().asType()));
 
-        CodeBlock bindingAssignment =
-                CodeBlock.builder()
-                        .addStatement(
-                                "this.binding = $T.inflate(inflater, $L, $L, $L)",
-                                ClassName.get("android.databinding", "DataBindingUtil"),
-                                bindLayout.value(),
-                                "parent",
-                                "attachToParent")
-                        .addStatement("target.$T = this.binding", bindingField)
-                        .build();
+        CodeBlock.Builder bindingAssignmentBuilder =
+                CodeBlock.builder();
 
-        if (bindingElements.getViewDataBinding().getModifiers().contains(Modifier.PRIVATE)) {
+        Set<Modifier> modifiers = bindingElements.getViewDataBinding().getModifiers();
+        if (modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED)) {
             String bindingFieldCap =
                     bindingField.name.substring(0, 1).toUpperCase()
                             + bindingField.name.substring(1);
-            bindingAssignment =
-                    CodeBlock.builder()
+            bindingAssignmentBuilder
                             .addStatement(
                                     "this.binding = $T.inflate(inflater, $L, $L, $L)",
                                     ClassName.get("android.databinding", "DataBindingUtil"),
@@ -186,6 +179,15 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                                     "attachToParent")
                             .addStatement("target.set$L(this.binding)", bindingFieldCap)
                             .build();
+        } else {
+            bindingAssignmentBuilder.addStatement(
+                    "this.binding = $T.inflate(inflater, $L, $L, $L)",
+                    ClassName.get("android.databinding", "DataBindingUtil"),
+                    bindLayout.value(),
+                    "parent",
+                    "attachToParent")
+                    .addStatement("target.$T = this.binding", bindingField)
+                    .build();
         }
 
         MethodSpec bindMethod1 =
@@ -198,7 +200,7 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                         .addParameter(boolean.class, "attachToParent")
                         .addStatement("this.target = ($L)", "target")
                         .addStatement("this.layoutRes = ($L)", bindLayout.value())
-                        .addCode(bindingAssignment)
+                        .addCode(bindingAssignmentBuilder.build())
                         .addStatement("this.view = this.binding.getRoot()")
                         .addStatement("return this.view")
                         .returns(View.class)

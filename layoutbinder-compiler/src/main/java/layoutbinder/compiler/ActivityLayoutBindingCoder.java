@@ -26,6 +26,7 @@ import com.squareup.javapoet.TypeVariableName;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.processing.Filer;
 import javax.lang.model.element.Modifier;
@@ -124,26 +125,28 @@ public enum ActivityLayoutBindingCoder implements LayoutBindingCoder {
                 TypeVariableName.get(
                         viewDataBindingFieldName,
                         TypeName.get(bindingElements.getViewDataBinding().asType()));
-        CodeBlock bindingAssignment =
-                CodeBlock.builder()
-                        .addStatement(
-                                "this.binding = $T.setContentView(target, $L)",
-                                ClassName.get("android.databinding", "DataBindingUtil"),
-                                bindLayout.value())
-                        .addStatement("target.$T = this.binding", bindingField)
-                        .build();
-        if (bindingElements.getViewDataBinding().getModifiers().contains(Modifier.PRIVATE)) {
+        CodeBlock.Builder bindingAssignmentBuilder = CodeBlock.builder();
+
+        Set<Modifier> modifiers = bindingElements.getViewDataBinding().getModifiers();
+        if (modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED)) {
             String bindingFieldCap =
                     bindingField.name.substring(0, 1).toUpperCase()
                             + bindingField.name.substring(1);
-            bindingAssignment =
-                    CodeBlock.builder()
-                            .addStatement(
-                                    "this.binding = $T.setContentView(target, $L)",
-                                    ClassName.get("android.databinding", "DataBindingUtil"),
-                                    bindLayout.value())
-                            .addStatement("target.set$L(this.binding)", bindingFieldCap)
-                            .build();
+            bindingAssignmentBuilder
+                    .addStatement(
+                            "this.binding = $T.setContentView(target, $L)",
+                            ClassName.get("android.databinding", "DataBindingUtil"),
+                            bindLayout.value())
+                    .addStatement("target.set$L(this.binding)", bindingFieldCap)
+                    .build();
+        } else {
+            bindingAssignmentBuilder
+                    .addStatement(
+                            "this.binding = $T.setContentView(target, $L)",
+                            ClassName.get("android.databinding", "DataBindingUtil"),
+                            bindLayout.value())
+                    .addStatement("target.$T = this.binding", bindingField)
+                    .build();
         }
 
         MethodSpec bindMethod1 =
@@ -153,7 +156,7 @@ public enum ActivityLayoutBindingCoder implements LayoutBindingCoder {
                         .addParameter(targetClassName, "target")
                         .addStatement("this.target = $L", "target")
                         .addStatement("this.layoutRes = $L", bindLayout.value())
-                        .addCode(bindingAssignment)
+                        .addCode(bindingAssignmentBuilder.build())
                         .addStatement("this.view = this.binding.getRoot()")
                         .returns(void.class)
                         .build();
