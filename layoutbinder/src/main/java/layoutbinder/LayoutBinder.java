@@ -23,25 +23,44 @@ import android.view.ViewGroup;
 import layoutbinder.runtime.ActivityLayoutBinder;
 import layoutbinder.runtime.FragmentLayoutBinder;
 import layoutbinder.runtime.LayoutBinding;
+import layoutbinder.runtime.LayoutBindingFactory;
 
 public class LayoutBinder {
 
     public static LayoutBinding bind(Activity activity) {
-        LayoutBinding binding = LayoutBindingFactoryMapper.get(activity).create();
+        LayoutBinding binding = createLayoutBinding(activity);
+        if (binding == null) {
+            return null;
+        }
         ((ActivityLayoutBinder) binding).bind(activity);
         return binding;
     }
 
     public static LayoutBinding bind(
             Fragment fragment, LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
-        LayoutBinding binding = LayoutBindingFactoryMapper.get(fragment).create();
+        LayoutBinding binding = createLayoutBinding(fragment);
+        if (binding == null) {
+            return null;
+        }
         ((FragmentLayoutBinder) binding).bind(fragment, inflater, parent, attachToParent);
         return binding;
     }
 
     public static LayoutBinding bind(Fragment fragment, LayoutInflater inflater, ViewGroup parent) {
-        LayoutBinding binding = LayoutBindingFactoryMapper.get(fragment).create();
+        LayoutBinding binding = createLayoutBinding(fragment);
+        if (binding == null) {
+            return null;
+        }
         ((FragmentLayoutBinder) binding).bind(fragment, inflater, parent);
+        return binding;
+    }
+
+    private static LayoutBinding createLayoutBinding(Object target) {
+        LayoutBindingFactory factory = LayoutBindingFactoryMapper.get(target);
+        if (null == factory) {
+            return null;
+        }
+        LayoutBinding binding = factory.create();
         return binding;
     }
 }

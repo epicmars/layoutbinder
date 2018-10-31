@@ -3,6 +3,7 @@
     <string name="title_default_example">Default Example</string>
     <string name="title_data_binding_example">Data Binding Example</string>
     <string name="title_data_binding_example_in_kotlin">Data Binding Example In Kotlin</string>
+    <string name="title_noop_example">Noop Example</string>
 
     <string name="example_fragment">Default Example Fragment</string>
     <string name="data_binding_example_fragment">Data Binding Example Fragment</string>

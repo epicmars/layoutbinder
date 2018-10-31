@@ -35,4 +35,15 @@
         android:textAllCaps="false"
         app:layout_constraintTop_toBottomOf="@+id/btn_data_binding_example" />
 
+    <Button
+        android:id="@+id/btn_noop_example"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/title_noop_example"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_data_binding_example_kotlin" />
+
 </android.support.constraint.ConstraintLayout>
