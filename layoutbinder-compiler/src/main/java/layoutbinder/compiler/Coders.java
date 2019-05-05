@@ -47,6 +47,7 @@ public class Coders {
                 {
                     put(Constants.ACTIVITY_TYPE_NAME, ActivityLayoutBindingCoder.INSTANCE);
                     put(Constants.FRAGMENT_TYPE_NAME, FragmentLayoutBindingCoder.INSTANCE);
+                    put(Constants.LEGACY_SUPPORT_FRAGMENT_TYPE_NAME, FragmentLayoutBindingCoder.INSTANCE);
                     put(Constants.SUPPORT_FRAGMENT_TYPE_NAME, FragmentLayoutBindingCoder.INSTANCE);
                 }
             };
@@ -61,6 +62,7 @@ public class Coders {
         if (isSubType(typeElement, Constants.ACTIVITY_TYPE_NAME)) {
             return ActivityLayoutBindingCoder.INSTANCE;
         } else if (isSubType(typeElement, Constants.FRAGMENT_TYPE_NAME)
+                || isSubType(typeElement, Constants.LEGACY_SUPPORT_FRAGMENT_TYPE_NAME)
                 || isSubType(typeElement, Constants.SUPPORT_FRAGMENT_TYPE_NAME)) {
             return FragmentLayoutBindingCoder.INSTANCE;
         }

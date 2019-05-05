@@ -35,9 +35,11 @@ import javax.lang.model.element.TypeElement;
 import layoutbinder.annotations.BindLayout;
 
 import static com.google.auto.common.MoreElements.getPackage;
+import static layoutbinder.compiler.Constants.ANDROID_DATABINDING_PACKAGE;
 
 public enum ActivityLayoutBindingCoder implements LayoutBindingCoder {
     INSTANCE;
+
 
     @Override
     public void code(Filer filer, BindingElements bindingElements) {
@@ -138,7 +140,7 @@ public enum ActivityLayoutBindingCoder implements LayoutBindingCoder {
                 bindingAssignmentBuilder
                         .addStatement(
                                 "this.binding = $T.setContentView(target, $L)",
-                                ClassName.get("android.databinding", "DataBindingUtil"),
+                                ClassName.get(ANDROID_DATABINDING_PACKAGE, "DataBindingUtil"),
                                 bindLayout.value())
                         .addStatement("target.$L(this.binding)", bindingFieldSetter)
                         .build();
@@ -154,7 +156,7 @@ public enum ActivityLayoutBindingCoder implements LayoutBindingCoder {
             bindingAssignmentBuilder
                     .addStatement(
                             "this.binding = $T.setContentView(target, $L)",
-                            ClassName.get("android.databinding", "DataBindingUtil"),
+                            ClassName.get(ANDROID_DATABINDING_PACKAGE, "DataBindingUtil"),
                             bindLayout.value())
                     .addStatement("target.$T = this.binding", bindingField)
                     .build();

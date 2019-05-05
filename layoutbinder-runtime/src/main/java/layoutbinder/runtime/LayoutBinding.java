@@ -15,9 +15,10 @@
  */
 package layoutbinder.runtime;
 
-import android.databinding.ViewDataBinding;
-import android.support.annotation.LayoutRes;
 import android.view.View;
+
+import androidx.annotation.LayoutRes;
+import androidx.databinding.ViewDataBinding;
 
 public abstract class LayoutBinding<T, VDB> implements LayoutUnbinder {
 

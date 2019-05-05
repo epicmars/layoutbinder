@@ -3,7 +3,7 @@ package com.androidpi.layoutbinder.sample
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.androidpi.layoutbinder.sample.databinding.ActivityKotlinDataBindingExampleBinding
 import layoutbinder.LayoutBinder
 import layoutbinder.annotations.BindLayout

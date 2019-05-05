@@ -37,6 +37,7 @@ import javax.lang.model.element.Modifier;
 import layoutbinder.annotations.BindLayout;
 
 import static com.google.auto.common.MoreElements.getPackage;
+import static layoutbinder.compiler.Constants.ANDROID_DATABINDING_PACKAGE;
 
 public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
     INSTANCE;
@@ -174,7 +175,7 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                 bindingAssignmentBuilder
                         .addStatement(
                                 "this.binding = $T.inflate(inflater, $L, $L, $L)",
-                                ClassName.get("android.databinding", "DataBindingUtil"),
+                                ClassName.get(ANDROID_DATABINDING_PACKAGE, "DataBindingUtil"),
                                 bindLayout.value(),
                                 "parent",
                                 "attachToParent")
@@ -192,7 +193,7 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
             bindingAssignmentBuilder
                     .addStatement(
                             "this.binding = $T.inflate(inflater, $L, $L, $L)",
-                            ClassName.get("android.databinding", "DataBindingUtil"),
+                            ClassName.get(ANDROID_DATABINDING_PACKAGE, "DataBindingUtil"),
                             bindLayout.value(),
                             "parent",
                             "attachToParent")

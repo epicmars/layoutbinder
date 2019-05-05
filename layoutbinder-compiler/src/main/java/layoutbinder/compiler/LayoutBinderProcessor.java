@@ -15,7 +15,7 @@
  */
 package layoutbinder.compiler;
 
-import com.google.auto.service.AutoService;
+//import com.google.auto.service.AutoService;
 import com.sun.source.util.Trees;
 
 import java.util.Arrays;
@@ -27,7 +27,6 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
@@ -38,7 +37,7 @@ import javax.lang.model.util.Types;
 
 import layoutbinder.annotations.BindLayout;
 
-@AutoService(Processor.class)
+//@AutoService(Processor.class)
 public class LayoutBinderProcessor extends AbstractProcessor {
 
     private Filer filer;

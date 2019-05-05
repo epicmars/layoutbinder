@@ -17,11 +17,11 @@ package com.androidpi.layoutbinder.sample;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import layoutbinder.LayoutBinder;
+import androidx.appcompat.app.AppCompatActivity;
 
+import layoutbinder.LayoutBinder;
 import layoutbinder.annotations.BindLayout;
 import layoutbinder.runtime.LayoutBinding;
 

@@ -7,14 +7,16 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     testImplementation 'junit:junit:4.12'
 
-    implementation project(':layoutbinder-annotations')
-
     implementation 'com.squareup:javapoet:1.11.1'
     implementation 'com.google.auto:auto-common:0.10'
     implementation 'com.google.android:android:4.1.1.4'
-    implementation 'com.google.android:support-v4:r7'
-    compileOnly 'com.google.auto.service:auto-service:1.0-rc4'
+//    implementation 'com.google.android:support-v4:r7'
+//    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+//    implementation 'androidx.appcompat:appcompat:1.0.2'
+//    compileOnly 'com.google.auto.service:auto-service:1.0-rc5'
     compileOnly files(org.gradle.internal.jvm.Jvm.current().toolsJar)
+
+    implementation project(':layoutbinder-annotations')
 }
 
 ext {
