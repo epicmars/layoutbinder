@@ -40,7 +40,6 @@ import static layoutbinder.compiler.Constants.ANDROID_DATABINDING_PACKAGE;
 public enum ActivityLayoutBindingCoder implements LayoutBindingCoder {
     INSTANCE;
 
-
     @Override
     public void code(Filer filer, BindingElements bindingElements) {
         final TypeElement targetElement = bindingElements.getTarget();
@@ -148,8 +147,8 @@ public enum ActivityLayoutBindingCoder implements LayoutBindingCoder {
                 throw new RuntimeException(
                         String.format(
                                 "%s's field \"%s\" should has a public or package-private modifier,"
-                                        + "otherwise a corresponding setter method should be presented " +
-                                        "with a public or package-private modifier.",
+                                        + "otherwise a corresponding setter method should be presented "
+                                        + "with a public or package-private modifier.",
                                 targetClassName.toString(), bindingField.name));
             }
         } else {

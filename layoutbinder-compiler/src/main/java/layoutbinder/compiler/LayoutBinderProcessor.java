@@ -18,9 +18,7 @@ package layoutbinder.compiler;
 //import com.google.auto.service.AutoService;
 import com.sun.source.util.Trees;
 
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -28,6 +26,9 @@ import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedAnnotationTypes;
+import javax.annotation.processing.SupportedOptions;
+import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -38,6 +39,9 @@ import javax.lang.model.util.Types;
 import layoutbinder.annotations.BindLayout;
 
 //@AutoService(Processor.class)
+@SupportedAnnotationTypes({"layoutbinder.annotations.BindLayout"})
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedOptions({})
 public class LayoutBinderProcessor extends AbstractProcessor {
 
     private Filer filer;
@@ -83,20 +87,5 @@ public class LayoutBinderProcessor extends AbstractProcessor {
         }
         coders.code(filer, bindingElementsSet);
         return false;
-    }
-
-    @Override
-    public Set<String> getSupportedAnnotationTypes() {
-        return new LinkedHashSet<>(Arrays.asList(BindLayout.class.getCanonicalName()));
-    }
-
-    @Override
-    public Set<String> getSupportedOptions() {
-        return super.getSupportedOptions();
-    }
-
-    @Override
-    public SourceVersion getSupportedSourceVersion() {
-        return SourceVersion.RELEASE_8;
     }
 }
