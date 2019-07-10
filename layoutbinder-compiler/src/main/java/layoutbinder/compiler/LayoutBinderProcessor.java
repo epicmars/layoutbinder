@@ -15,7 +15,7 @@
  */
 package layoutbinder.compiler;
 
-//import com.google.auto.service.AutoService;
+// import com.google.auto.service.AutoService;
 import com.sun.source.util.Trees;
 
 import java.util.HashSet;
@@ -31,6 +31,7 @@ import javax.annotation.processing.SupportedOptions;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
+import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
@@ -38,7 +39,7 @@ import javax.lang.model.util.Types;
 
 import layoutbinder.annotations.BindLayout;
 
-//@AutoService(Processor.class)
+// @AutoService(Processor.class)
 @SupportedAnnotationTypes({"layoutbinder.annotations.BindLayout"})
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @SupportedOptions({})
@@ -71,12 +72,12 @@ public class LayoutBinderProcessor extends AbstractProcessor {
                 roundEnvironment.getElementsAnnotatedWith(BindLayout.class);
         Set<BindingElements> bindingElementsSet = new HashSet<>();
         for (Element element : elementSet) {
-            if (element instanceof TypeElement) {
+            if (element.getKind() == ElementKind.CLASS) {
                 TypeElement typeElement = ((TypeElement) element);
                 BindingElements bindingElements = new BindingElements();
                 bindingElements.setTarget(typeElement);
                 bindingElementsSet.add(bindingElements);
-            } else if (element instanceof VariableElement) {
+            } else if (element.getKind() == ElementKind.FIELD) {
                 VariableElement variableElement = ((VariableElement) element);
                 BindingElements bindingElements = new BindingElements();
                 // If the enclosing element is wrong, an exception will occur.
