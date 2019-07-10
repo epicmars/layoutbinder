@@ -174,7 +174,7 @@ bintray {
     configurations = ['archives']
     override = true
     publish = true
-    dryRun = true
+    dryRun = false
 
     pkg {
         repo = 'maven'
@@ -185,7 +185,7 @@ bintray {
         vcsUrl = VCS_URL
         websiteUrl = VCS_SITE_URL
 
-        githubRepo = 'jastrelax/layoutbinder'
+        githubRepo = GITHUB_REPO
 
         version {
             name = VERSION
