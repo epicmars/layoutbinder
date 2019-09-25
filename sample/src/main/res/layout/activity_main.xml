@@ -1,49 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <Button
-        android:id="@+id/btn_example_activity"
+    <data>
+        <variable
+            name="handler"
+            type="com.androidpi.layoutbinder.sample.MainActivity.ViewHandler" />
+    </data>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/title_default_example"
-        android:textAllCaps="false"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btn_data_binding_example"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/title_data_binding_example"
-        android:textAllCaps="false"
-        app:layout_constraintTop_toBottomOf="@+id/btn_example_activity" />
+        <Button
+            android:id="@+id/btn_example_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/title_default_example"
+            android:textAllCaps="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="@{() -> handler.navToNormalExample()}"/>
 
-    <Button
-        android:id="@+id/btn_data_binding_example_kotlin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/title_data_binding_example_in_kotlin"
-        android:textAllCaps="false"
-        app:layout_constraintTop_toBottomOf="@+id/btn_data_binding_example" />
+        <Button
+            android:id="@+id/btn_data_binding_example"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/title_data_binding_example"
+            android:textAllCaps="false"
+            app:layout_constraintTop_toBottomOf="@+id/btn_example_activity"
+            android:onClick="@{() -> handler.navToDataBindingExample()}"/>
 
-    <Button
-        android:id="@+id/btn_noop_example"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/title_noop_example"
-        android:textAllCaps="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_data_binding_example_kotlin" />
+        <Button
+            android:id="@+id/btn_data_binding_example_kotlin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/title_data_binding_example_in_kotlin"
+            android:textAllCaps="false"
+            app:layout_constraintTop_toBottomOf="@+id/btn_data_binding_example"
+            android:onClick="@{() -> handler.navToKotlinDataBindingExample()}"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <Button
+            android:id="@+id/btn_custom_view_example"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/title_custom_view_example"
+            android:textAllCaps="false"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_data_binding_example_kotlin"
+            android:onClick="@{() -> handler.navToCustomViewExample()}"/>
+
+    </LinearLayout>
+</layout>

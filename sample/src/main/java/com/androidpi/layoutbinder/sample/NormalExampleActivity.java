@@ -17,24 +17,15 @@ package com.androidpi.layoutbinder.sample;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
-import layoutbinder.LayoutBinder;
+import layoutbinder.LayoutBinderActivity;
+import layoutbinder.annotations.BindLayout;
 
-public class ExampleNoopActivity extends AppCompatActivity {
+@BindLayout(R.layout.activity_normal_example)
+public class NormalExampleActivity extends LayoutBinderActivity {
 
     public static void start(Context context) {
-        Intent starter = new Intent(context, ExampleNoopActivity.class);
+        Intent starter = new Intent(context, NormalExampleActivity.class);
         context.startActivity(starter);
-    }
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_example_noop);
-        // Calling this method without a annotation present is fine.
-        LayoutBinder.bind(this);
     }
 }

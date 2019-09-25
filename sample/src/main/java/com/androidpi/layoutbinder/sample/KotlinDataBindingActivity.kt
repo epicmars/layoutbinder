@@ -3,12 +3,12 @@ package com.androidpi.layoutbinder.sample
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.androidpi.layoutbinder.sample.databinding.ActivityKotlinDataBindingExampleBinding
 import layoutbinder.LayoutBinder
+import layoutbinder.LayoutBinderActivity
 import layoutbinder.annotations.BindLayout
 
-class KotlinDataBindingActivity : AppCompatActivity() {
+class KotlinDataBindingActivity : LayoutBinderActivity() {
 
     companion object {
         fun start(context: Context) {
@@ -19,9 +19,4 @@ class KotlinDataBindingActivity : AppCompatActivity() {
 
     @BindLayout(R.layout.activity_kotlin_data_binding_example)
     var binding: ActivityKotlinDataBindingExampleBinding? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        LayoutBinder.bind(this)
-    }
 }

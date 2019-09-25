@@ -25,35 +25,44 @@ import layoutbinder.runtime.ActivityLayoutBinder;
 import layoutbinder.runtime.FragmentLayoutBinder;
 import layoutbinder.runtime.LayoutBinding;
 import layoutbinder.runtime.LayoutBindingFactory;
+import layoutbinder.runtime.ViewLayoutBinder;
 
 public class LayoutBinder {
 
     public static LayoutBinding bind(Activity activity) {
-        LayoutBinding binding = createLayoutBinding(activity);
-        if (binding == null) {
+        LayoutBinding layoutBinding = createLayoutBinding(activity);
+        if (layoutBinding == null) {
             return null;
         }
-        ((ActivityLayoutBinder) binding).bind(activity);
-        return binding;
+        ((ActivityLayoutBinder) layoutBinding).bind(activity);
+        return layoutBinding;
     }
 
     public static LayoutBinding bind(
             Fragment fragment, LayoutInflater inflater, ViewGroup parent, boolean attachToParent) {
-        LayoutBinding binding = createLayoutBinding(fragment);
-        if (binding == null) {
+        LayoutBinding layoutBinding = createLayoutBinding(fragment);
+        if (layoutBinding == null) {
             return null;
         }
-        ((FragmentLayoutBinder) binding).bind(fragment, inflater, parent, attachToParent);
-        return binding;
+        ((FragmentLayoutBinder) layoutBinding).bind(fragment, inflater, parent, attachToParent);
+        return layoutBinding;
     }
 
     public static LayoutBinding bind(Fragment fragment, LayoutInflater inflater, ViewGroup parent) {
-        LayoutBinding binding = createLayoutBinding(fragment);
-        if (binding == null) {
+        LayoutBinding layoutBinding = createLayoutBinding(fragment);
+        if (layoutBinding == null) {
             return null;
         }
-        ((FragmentLayoutBinder) binding).bind(fragment, inflater, parent);
-        return binding;
+        ((FragmentLayoutBinder) layoutBinding).bind(fragment, inflater, parent);
+        return layoutBinding;
+    }
+
+    public static LayoutBinding bind(ViewGroup viewGroup) {
+        LayoutBinding layoutBinding = createLayoutBinding(viewGroup);
+        if (layoutBinding == null)
+            return null;
+        ((ViewLayoutBinder) layoutBinding).bind(viewGroup);
+        return layoutBinding;
     }
 
     private static LayoutBinding createLayoutBinding(Object target) {

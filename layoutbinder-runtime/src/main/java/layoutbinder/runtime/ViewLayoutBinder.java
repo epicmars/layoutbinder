@@ -1,5 +1,9 @@
+package layoutbinder.runtime;
+
+import android.view.ViewGroup;
+
 /*
- * Copyright 2018 yinpinjiu@gmail.com
+ * Copyright 2019 yinpinjiu@gmail.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +17,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.androidpi.layoutbinder.sample;
-
-import com.androidpi.layoutbinder.sample.databinding.FragmentDataBindingExampleBinding;
-
-import layoutbinder.LayoutBinderFragment;
-import layoutbinder.annotations.BindLayout;
-
-public class DataBindingExampleFragment extends LayoutBinderFragment {
-
-    @BindLayout(R.layout.fragment_data_binding_example)
-    FragmentDataBindingExampleBinding binding;
-
+public interface ViewLayoutBinder<T extends ViewGroup> {
+    /**
+     * Bind a layout resource to a view group (parent view).
+     *
+     * @param viewGroup the view group (parent view) to which the layout is bound.
+     */
+    void bind(T viewGroup);
 }

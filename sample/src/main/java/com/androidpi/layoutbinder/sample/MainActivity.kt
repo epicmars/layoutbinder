@@ -15,33 +15,36 @@
  */
 package com.androidpi.layoutbinder.sample
 
+import android.app.Activity
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import com.androidpi.layoutbinder.sample.customview.CustomViewActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import layoutbinder.LayoutBinder
+import layoutbinder.LayoutBinderActivity
 import layoutbinder.annotations.BindLayout
 
 @BindLayout(R.layout.activity_main)
-class MainActivity : AppCompatActivity() {
+class MainActivity : LayoutBinderActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        LayoutBinder.bind(this)
+    inner class ViewHandler {
 
-        btn_example_activity.setOnClickListener {
-            ExampleActivity.start(this)
+        fun navToNormalExample() {
+            NormalExampleActivity.start(getContext())
         }
 
-        btn_data_binding_example.setOnClickListener {
-            DataBindingExampleActivity.start(this)
+        fun navToDataBindingExample() {
+            DataBindingExampleActivity.start(getContext())
         }
 
-        btn_data_binding_example_kotlin.setOnClickListener {
-            KotlinDataBindingActivity.start(this)
+        fun navToKotlinDataBindingExample() {
+            KotlinDataBindingActivity.start(getContext())
         }
 
-        btn_noop_example.setOnClickListener {
-            ExampleNoopActivity.start(this)
+        fun navToCustomViewExample() {
+            CustomViewActivity.start(getContext())
+        }
+
+        fun getContext() : Activity {
+            return this@MainActivity
         }
     }
 }

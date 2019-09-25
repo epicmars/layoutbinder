@@ -28,6 +28,10 @@ public interface Constants {
 
     String SUPPORT_FRAGMENT_TYPE_NAME = "androidx.fragment.app.Fragment";
 
+    String VIEW_TYPE_NAME = "android.view.View";
+
+    String ANDROID_VIEW_PACKAGE = "android.view";
+
     String ANDROID_DATABINDING_PACKAGE = "androidx.databinding";
 
     String LEGACY_ANDROID_DATABINDING_PACKAGE = "android.databinding";

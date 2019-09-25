@@ -28,6 +28,16 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface BindLayout {
 
+    /**
+     * A layout resource you want to bind to an activity, a fragment or a view.
+     * @return
+     */
     @LayoutRes
     int value() default 0;
+
+    /**
+     * When binding layout to a view, specify whether the view inflated from the layout resource
+     * is attached to the view that is bound.
+     */
+    boolean attachToParent() default false;
 }

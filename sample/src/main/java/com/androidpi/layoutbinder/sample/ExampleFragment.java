@@ -15,29 +15,12 @@
  */
 package com.androidpi.layoutbinder.sample;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import layoutbinder.LayoutBinder;
+import layoutbinder.LayoutBinderFragment;
 import layoutbinder.annotations.BindLayout;
 
 @BindLayout(R.layout.fragment_example)
-public class ExampleFragment extends Fragment {
+public class ExampleFragment extends LayoutBinderFragment {
 
     public ExampleFragment() {}
 
-    @Nullable
-    @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
-        return LayoutBinder.bind(this, inflater, container, false).getView();
-    }
 }

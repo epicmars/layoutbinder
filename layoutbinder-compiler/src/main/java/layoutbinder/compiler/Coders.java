@@ -65,6 +65,8 @@ public class Coders {
                 || isSubType(typeElement, Constants.LEGACY_SUPPORT_FRAGMENT_TYPE_NAME)
                 || isSubType(typeElement, Constants.SUPPORT_FRAGMENT_TYPE_NAME)) {
             return FragmentLayoutBindingCoder.INSTANCE;
+        } else if (isSubType(typeElement, Constants.VIEW_TYPE_NAME)) {
+            return ViewLayoutBindingCoder.INSTANCE;
         }
         return null;
     }

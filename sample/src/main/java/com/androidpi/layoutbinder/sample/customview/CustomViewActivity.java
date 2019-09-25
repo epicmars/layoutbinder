@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 yinpinjiu@gmail.com
+ * Copyright 2019 yinpinjiu@gmail.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,37 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.androidpi.layoutbinder.sample;
+package com.androidpi.layoutbinder.sample.customview;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.androidpi.layoutbinder.sample.R;
 
-import layoutbinder.LayoutBinder;
+import layoutbinder.LayoutBinderActivity;
 import layoutbinder.annotations.BindLayout;
-import layoutbinder.runtime.LayoutBinding;
 
-@BindLayout(R.layout.activity_example)
-public class ExampleActivity extends AppCompatActivity {
+@BindLayout(R.layout.activity_custom_view)
+public class CustomViewActivity extends LayoutBinderActivity {
 
-    LayoutBinding layoutBinding;
 
     public static void start(Context context) {
-        Intent starter = new Intent(context, ExampleActivity.class);
+        Intent starter = new Intent(context, CustomViewActivity.class);
         context.startActivity(starter);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        layoutBinding = LayoutBinder.bind(this);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        layoutBinding.unbind();
     }
 }

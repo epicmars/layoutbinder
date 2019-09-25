@@ -18,14 +18,14 @@ package com.androidpi.layoutbinder.sample;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.androidpi.layoutbinder.sample.databinding.ActivityDataBindingExampleBinding;
 
 import layoutbinder.LayoutBinder;
+import layoutbinder.LayoutBinderActivity;
 import layoutbinder.annotations.BindLayout;
 
-public class DataBindingExampleActivity extends AppCompatActivity {
+public class DataBindingExampleActivity extends LayoutBinderActivity {
 
     @BindLayout(R.layout.activity_data_binding_example)
     ActivityDataBindingExampleBinding binding;
@@ -33,11 +33,5 @@ public class DataBindingExampleActivity extends AppCompatActivity {
     public static void start(Context context) {
         Intent starter = new Intent(context, DataBindingExampleActivity.class);
         context.startActivity(starter);
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        LayoutBinder.bind(this);
     }
 }
