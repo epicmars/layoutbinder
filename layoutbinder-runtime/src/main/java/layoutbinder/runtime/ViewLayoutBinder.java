@@ -24,4 +24,11 @@ public interface ViewLayoutBinder<T extends ViewGroup> {
      * @param viewGroup the view group (parent view) to which the layout is bound.
      */
     void bind(T viewGroup);
+
+    /**
+     * Bind a layout resource to a view group (parent view).
+     * @param viewGroup the view group (parent view) to which the layout is bound.
+     * @param attachToParent whether attach to the view that is bound.
+     */
+    void bind(T viewGroup, boolean attachToParent);
 }

@@ -8,4 +8,6 @@
 
     <string name="example_fragment">Default Example Fragment</string>
     <string name="data_binding_example_fragment">Data Binding Example Fragment</string>
+    <string name="custom_layout">Custom layout.</string>
+    <string name="another_custom_layout">Another custom layout.</string>
 </resources>

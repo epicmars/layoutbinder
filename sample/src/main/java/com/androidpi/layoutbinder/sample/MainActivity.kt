@@ -17,13 +17,19 @@ package com.androidpi.layoutbinder.sample
 
 import android.app.Activity
 import android.os.Bundle
-import com.androidpi.layoutbinder.sample.customview.CustomViewActivity
-import kotlinx.android.synthetic.main.activity_main.*
+import com.androidpi.layoutbinder.sample.databinding.ActivityMainBinding
 import layoutbinder.LayoutBinderActivity
 import layoutbinder.annotations.BindLayout
 
-@BindLayout(R.layout.activity_main)
 class MainActivity : LayoutBinderActivity() {
+
+    @BindLayout(R.layout.activity_main)
+    lateinit var binding : ActivityMainBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding.handler = ViewHandler()
+    }
 
     inner class ViewHandler {
 

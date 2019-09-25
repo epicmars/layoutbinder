@@ -65,6 +65,14 @@ public class LayoutBinder {
         return layoutBinding;
     }
 
+    public static LayoutBinding bind(ViewGroup viewGroup, boolean attachToParent) {
+        LayoutBinding layoutBinding = createLayoutBinding(viewGroup);
+        if (layoutBinding == null)
+            return null;
+        ((ViewLayoutBinder) layoutBinding).bind(viewGroup, attachToParent);
+        return layoutBinding;
+    }
+
     private static LayoutBinding createLayoutBinding(Object target) {
         LayoutBindingFactory factory = LayoutBindingFactoryMapper.get(target);
         if (null == factory) {

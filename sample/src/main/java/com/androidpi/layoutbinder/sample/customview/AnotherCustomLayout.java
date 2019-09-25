@@ -27,7 +27,7 @@ import layoutbinder.annotations.BindLayout;
  */
 public class AnotherCustomLayout extends FrameLayout {
 
-    @BindLayout(R.layout.another_custom_layout)
+    @BindLayout(value = R.layout.another_custom_layout)
     AnotherCustomLayoutBinding binding;
 
     public AnotherCustomLayout(Context context) {
@@ -41,6 +41,5 @@ public class AnotherCustomLayout extends FrameLayout {
     public AnotherCustomLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         LayoutBinder.bind(this);
-
     }
 }

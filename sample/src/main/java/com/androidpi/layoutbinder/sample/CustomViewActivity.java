@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.androidpi.layoutbinder.sample.customview;
+package com.androidpi.layoutbinder.sample;
 
 import android.content.Context;
 import android.content.Intent;
-
-import com.androidpi.layoutbinder.sample.R;
 
 import layoutbinder.LayoutBinderActivity;
 import layoutbinder.annotations.BindLayout;

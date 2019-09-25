@@ -166,6 +166,13 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
         CodeBlock.Builder bindingAssignmentBuilder = CodeBlock.builder();
 
         Set<Modifier> modifiers = bindingElements.getViewDataBinding().getModifiers();
+        CodeBlock bindingStatement =
+                CodeBlock.of(
+                        "this.binding = $T.inflate(inflater, $L, $L, $L)",
+                        ClassName.get(ANDROID_DATABINDING_PACKAGE, "DataBindingUtil"),
+                        bindLayout.value(),
+                        "parent",
+                        "attachToParent");
         if (modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED)) {
             String bindingFieldSetter =
                     "set"
@@ -173,12 +180,7 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
                             + bindingField.name.substring(1);
             if (CodeUtils.hasAccessibleMethod(bindingElements.getTarget(), bindingFieldSetter)) {
                 bindingAssignmentBuilder
-                        .addStatement(
-                                "this.binding = $T.inflate(inflater, $L, $L, $L)",
-                                ClassName.get(ANDROID_DATABINDING_PACKAGE, "DataBindingUtil"),
-                                bindLayout.value(),
-                                "parent",
-                                "attachToParent")
+                        .addStatement(bindingStatement)
                         .addStatement("target.$L(this.binding)", bindingFieldSetter)
                         .build();
             } else {
@@ -191,12 +193,7 @@ public enum FragmentLayoutBindingCoder implements LayoutBindingCoder {
             }
         } else {
             bindingAssignmentBuilder
-                    .addStatement(
-                            "this.binding = $T.inflate(inflater, $L, $L, $L)",
-                            ClassName.get(ANDROID_DATABINDING_PACKAGE, "DataBindingUtil"),
-                            bindLayout.value(),
-                            "parent",
-                            "attachToParent")
+                    .addStatement(bindingStatement)
                     .addStatement("target.$T = this.binding", bindingField)
                     .build();
         }

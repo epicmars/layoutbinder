@@ -24,8 +24,7 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -55,6 +54,7 @@ public enum ViewLayoutBindingCoder implements LayoutBindingCoder {
 
     /**
      * Generate a layout binding class with provided annotation.
+     *
      * @param filer
      * @param packageName
      * @param bindingElements
@@ -90,8 +90,7 @@ public enum ViewLayoutBindingCoder implements LayoutBindingCoder {
 
         TypeName interfaceParameterized =
                 ParameterizedTypeName.get(
-                        ClassName.get("layoutbinder.runtime", "ViewLayoutBinder"),
-                        targetClassName);
+                        ClassName.get("layoutbinder.runtime", "ViewLayoutBinder"), targetClassName);
 
         TypeSpec typeSpec =
                 TypeSpec.classBuilder(generatedClassName)
@@ -106,6 +105,7 @@ public enum ViewLayoutBindingCoder implements LayoutBindingCoder {
 
     /**
      * Generate layout binding method that do the work。
+     *
      * @param targetClassName
      * @param bindLayout
      * @param bindingElements
@@ -120,30 +120,43 @@ public enum ViewLayoutBindingCoder implements LayoutBindingCoder {
     }
 
     /**
-     * If a data binding field is not present when binding a layout to a view,
-     * the default binding method is generated.
+     * If a data binding field is not present when binding a layout to a view, the default binding
+     * method is generated.
+     *
      * @param targetClassName
      * @param bindLayout
      * @return
      */
     private List<MethodSpec> generateDefaultMethods(
             TypeName targetClassName, BindLayout bindLayout) {
-        MethodSpec bindMethod =
+        MethodSpec bindMethod1 =
                 MethodSpec.methodBuilder("bind")
                         .addAnnotation(Override.class)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(targetClassName, "target")
+                        .addStatement("this.bind(target, target != null)")
+                        .build();
+
+        MethodSpec bindMethod2 =
+                MethodSpec.methodBuilder("bind")
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                        .addParameter(targetClassName, "target")
+                        .addParameter(boolean.class, "attachToParent")
                         .addStatement("this.target = $L", "target")
                         .addStatement("this.layoutRes = $L", bindLayout.value())
-                        .addStatement("target.inflate(target.getContext(), $L, target)", bindLayout.value())
+                        .addStatement(
+                                "this.view = target.inflate(target.getContext(), $L, target)",
+                                bindLayout.value())
                         .returns(void.class)
                         .build();
-        return Collections.singletonList(bindMethod);
+        return Arrays.asList(bindMethod1, bindMethod2);
     }
 
     /**
-     * If data binding a data binding field is present when binding a layout to a view,
-     * then generate a method that return a data binding.
+     * If data binding a data binding field is present when binding a layout to a view, then
+     * generate a method that return a data binding.
+     *
      * @param targetClassName
      * @param bindLayout
      * @param bindingElements
@@ -161,11 +174,13 @@ public enum ViewLayoutBindingCoder implements LayoutBindingCoder {
 
         Set<Modifier> modifiers = bindingElements.getViewDataBinding().getModifiers();
 
-        CodeBlock binding = CodeBlock.of("this.binding = $T.inflate($T.from(target.getContext()), $L, target, $L)",
-                ClassName.get(ANDROID_DATABINDING_PACKAGE, "DataBindingUtil"),
-                ClassName.get(ANDROID_VIEW_PACKAGE, "LayoutInflater"),
-                bindLayout.value(),
-                bindLayout.attachToParent());
+        CodeBlock binding =
+                CodeBlock.of(
+                        "this.binding = $T.inflate($T.from(target.getContext()), $L, target, $L)",
+                        ClassName.get(ANDROID_DATABINDING_PACKAGE, "DataBindingUtil"),
+                        ClassName.get(ANDROID_VIEW_PACKAGE, "LayoutInflater"),
+                        bindLayout.value(),
+                        "attachToParent");
         if (modifiers.contains(Modifier.PRIVATE) || modifiers.contains(Modifier.PROTECTED)) {
             String bindingFieldSetter =
                     "set"
@@ -175,8 +190,7 @@ public enum ViewLayoutBindingCoder implements LayoutBindingCoder {
             if (CodeUtils.hasAccessibleMethod(bindingElements.getTarget(), bindingFieldSetter)) {
                 bindingAssignmentBuilder
                         .addStatement(binding)
-                        .addStatement("target.$L(this.binding)", bindingFieldSetter)
-                        .build();
+                        .addStatement("target.$L(this.binding)", bindingFieldSetter);
             } else {
                 throw new RuntimeException(
                         String.format(
@@ -188,8 +202,7 @@ public enum ViewLayoutBindingCoder implements LayoutBindingCoder {
         } else {
             bindingAssignmentBuilder
                     .addStatement(binding)
-                    .addStatement("target.$T = this.binding", bindingField)
-                    .build();
+                    .addStatement("target.$T = this.binding", bindingField);
         }
 
         MethodSpec bindMethod1 =
@@ -197,15 +210,23 @@ public enum ViewLayoutBindingCoder implements LayoutBindingCoder {
                         .addAnnotation(Override.class)
                         .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                         .addParameter(targetClassName, "target")
+                        .addStatement("this.bind(target, target != null)")
+                        .build();
+
+        MethodSpec bindMethod2 =
+                MethodSpec.methodBuilder("bind")
+                        .addAnnotation(Override.class)
+                        .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                        .addParameter(targetClassName, "target")
+                        .addParameter(boolean.class, "attachToParent")
                         .addStatement("this.target = $L", "target")
                         .addStatement("this.layoutRes = $L", bindLayout.value())
                         .addCode(bindingAssignmentBuilder.build())
                         .addStatement("this.view = this.binding.getRoot()")
                         .returns(void.class)
                         .build();
-        List<MethodSpec> methodSpecList = new ArrayList<>();
-        methodSpecList.add(bindMethod1);
-        return methodSpecList;
+
+        return Arrays.asList(bindMethod1, bindMethod2);
     }
 
     private void generateFactory(Filer filer, String packageName, String generatedClassName) {
