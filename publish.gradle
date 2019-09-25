@@ -58,6 +58,7 @@ if (isAndroidProject()) {
 
     bintrayUpload.mustRunAfter('assembleRelease', 'generatePomFileForProductionPublication', 'androidSourcesJar', 'androidJavadocJar')
 
+    // task used to upload to bintray
     task upload {
         dependsOn 'generatePomFileForProductionPublication'
         dependsOn 'androidSourcesJar'
