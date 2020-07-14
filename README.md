@@ -9,8 +9,8 @@ Bind layout resource to your activity or fragment with annotation.
 
 ```groovy
 dependencies {
-    implementation 'com.androidpi:layoutbinder:1.0.1'
-    annotationProcessor 'com.androidpi:layoutbinder-compiler:1.0.1'
+    implementation 'com.androidpi:layoutbinder:1.3.0'
+    annotationProcessor 'com.androidpi:layoutbinder-compiler:1.3.0'
 }
 ```
 As usual, to support kotlin, replace "annotationProcessor" with "kapt", and apply plugin "kotlin-kapt"
